@@ -1,4 +1,11 @@
-const NewsCard = ({ image, title, published_at, author, source }) => {
+const NewsCard = ({
+  image,
+  title,
+  published_at,
+  author,
+  source,
+  description,
+}) => {
   return (
     <div
       id="NewsCard"
