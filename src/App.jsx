@@ -1,5 +1,11 @@
+import NewsList from "./pages/NewsList";
+
 function App() {
-  return <div className="container mx-auto bg-red-500">hi</div>;
+  return (
+    <div>
+      <NewsList />
+    </div>
+  );
 }
 
 export default App;
