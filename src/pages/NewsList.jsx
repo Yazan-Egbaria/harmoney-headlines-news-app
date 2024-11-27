@@ -18,11 +18,12 @@ const NewsList = () => {
   return (
     <div
       id="NewsList"
-      className="pagePadding container mx-auto flex min-h-dvh items-center justify-center py-16 sm:min-h-screen"
+      className="pagePadding container mx-auto flex min-h-dvh flex-col items-center justify-center gap-12 py-16 sm:min-h-screen"
     >
+      <h1 className="text-4xl font-bold">News List</h1>
       <div className="flex flex-col gap-12">
         {cards.map((card, index) => {
-          return <NewsCard key={index} {...card} />;
+          return <NewsCard key={index} id={index} {...card} />;
         })}
       </div>
     </div>

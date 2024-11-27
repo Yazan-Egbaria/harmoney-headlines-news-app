@@ -1,13 +1,8 @@
-import Article from "./pages/Article";
-import NewsList from "./pages/NewsList";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./routes/Router";
 
 function App() {
-  return (
-    <div>
-      <NewsList />
-      <Article />
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
