@@ -5,6 +5,7 @@ const NewsCard = ({
   author,
   source,
   description,
+  url,
 }) => {
   return (
     <div
