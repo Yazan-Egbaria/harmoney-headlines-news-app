@@ -1,27 +1,28 @@
-const NewsCard = ({
+import NewsCard from "../components/NewsCard";
+
+const Article = ({
   image,
   title,
   published_at,
   author,
   source,
   description,
-  url,
 }) => {
   return (
     <div
-      id="NewsCard"
-      className="flex w-full flex-col gap-8 rounded border shadow-md md:w-[750px] md:flex-row"
+      id="NewsCardComponent"
+      className="pagePadding container mx-auto flex min-h-dvh items-center justify-center py-16 sm:min-h-screen"
     >
       <div
         id="content"
         className={`flex ${image ? "md:w-[50%]" : "md:w-full"} w-full flex-col justify-between gap-4 p-4`}
       >
-        <h2 className="text-2xl font-bold">{title}</h2>
-
+        <h2 className="text-4xl font-bold">{title}</h2>
+        <p className="text-xl text-gray-400">{description}</p>
         <div className="flex flex-col">
-          {author && <p className="text-sm font-bold">Author: {author}</p>}
-          <p className="text-sm font-bold">Date: {published_at}</p>
-          <p className="text-sm font-bold">Source: {source}</p>
+          {author && <p className="text-base font-bold">Author: {author}</p>}
+          <p className="text-base font-bold">Date: {published_at}</p>
+          <p className="text-base font-bold">Source: {source}</p>
         </div>
       </div>
 
@@ -38,4 +39,4 @@ const NewsCard = ({
   );
 };
 
-export default NewsCard;
+export default Article;
