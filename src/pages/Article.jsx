@@ -1,13 +1,26 @@
-import NewsCard from "../components/NewsCard";
+import { useEffect, useState } from "react";
+import { getNews } from "../utils/GetNews";
+import { useParams } from "react-router-dom";
 
-const Article = ({
-  image,
-  title,
-  published_at,
-  author,
-  source,
-  description,
-}) => {
+const Article = () => {
+  const [article, setArticle] = useState(null);
+  const { id } = useParams();
+
+  useEffect(() => {
+    getNews()
+      .then((data) => {
+        const specificCard = data.data[id];
+        setArticle(specificCard);
+      })
+      .catch((error) => {
+        console.error("Error fetching news list:", error);
+      });
+  }, [id]);
+
+  if (!article) return <div>Loading...</div>;
+
+  const { image, title, published_at, author, source, description } = article;
+
   return (
     <div
       id="NewsCardComponent"
