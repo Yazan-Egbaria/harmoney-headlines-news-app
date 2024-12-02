@@ -1,4 +1,4 @@
-const url = `http://api.mediastack.com/v1/news`;
+const url = `https://api.mediastack.com/v1/news`;
 
 export function getNews() {
   const params = {
