@@ -1,29 +1,30 @@
 import { useEffect, useState } from "react";
 import NewsCard from "../components/NewsCard";
-import { getNews } from "../utils/GetNews";
-import { processTitleMood } from "../gemini/GeminiFunctions";
+import axios from "axios";
 
 const NewsList = () => {
   const [cards, setCards] = useState([]);
 
-  // useEffect(() => {
-  //   getNews()
-  //     .then((data) => {
-  //       setCards(data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching news list:", error);
-  //     });
-  // }, []);
-
   useEffect(() => {
-    getNews()
-      .then((data) => {
-        setCards(data.data);
-        const titles = data.data.map((article) => article.title);
-        processTitleMood(titles).then((scores) => {
-          console.log("Mood Scores:", scores);
-        });
+    axios
+      .get("http://localhost:1477/getNews")
+      .then((response) => {
+        const articles = response.data;
+        const titles = articles.map((article) => article.title);
+        axios
+          .post("http://localhost:1477/processTitleMood", { titles })
+          .then((moodResponse) => {
+            const moodScores = moodResponse.data;
+            const articlesWithMood = articles.map((article, index) => ({
+              ...article,
+              moodScore: moodScores[index],
+            }));
+            setCards(articlesWithMood);
+          })
+          .catch((error) => {
+            console.error("Error processing mood scores:", error);
+            setCards(articles);
+          });
       })
       .catch((error) => {
         console.error("Error fetching news list:", error);

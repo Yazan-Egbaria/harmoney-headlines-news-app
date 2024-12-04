@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { getNews } from "../utils/GetNews";
 import { Link, useParams } from "react-router-dom";
-import { changeMood, processTitleMood } from "../gemini/GeminiFunctions";
+import axios from "axios";
 
 const Article = () => {
   const [article, setArticle] = useState(null);
@@ -9,13 +8,21 @@ const Article = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    getNews()
-      .then((data) => {
-        const specificCard = data.data[id];
+    axios
+      .get("http://localhost:1477/getNews")
+      .then((response) => {
+        const specificCard = response.data[id];
         setArticle(specificCard);
-        processTitleMood([specificCard.title]).then((scores) => {
-          setMoodScore(scores[0]);
-        });
+        axios
+          .post("http://localhost:1477/processTitleMood", {
+            titles: [specificCard.title],
+          })
+          .then((scoreResponse) => {
+            setMoodScore(scoreResponse.data[0]);
+          })
+          .catch((error) => {
+            console.error("Error fetching sentiment score:", error);
+          });
       })
       .catch((error) => {
         console.error("Error fetching news list:", error);
@@ -25,10 +32,22 @@ const Article = () => {
   const handleCalmify = async () => {
     if (article) {
       try {
-        const updatedArticle = await changeMood(article);
+        const calmifyResponse = await axios.post(
+          "http://localhost:1477/changeMood",
+          {
+            title: article.title,
+            description: article.description,
+          },
+        );
+        const updatedArticle = calmifyResponse.data;
         setArticle(updatedArticle);
-        const updatedScore = await processTitleMood([updatedArticle.title]);
-        setMoodScore(updatedScore[0]);
+        const scoreResponse = await axios.post(
+          "http://localhost:1477/processTitleMood",
+          {
+            titles: [updatedArticle.title],
+          },
+        );
+        setMoodScore(scoreResponse.data[0]);
       } catch (error) {
         console.error("Error updating mood:", error);
       }
