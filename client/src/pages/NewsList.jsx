@@ -7,12 +7,15 @@ const NewsList = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:1477/getNews")
+      .get("https://harmoney-headlines-news-server.onrender.com/getNews")
       .then((response) => {
         const articles = response.data;
         const titles = articles.map((article) => article.title);
         axios
-          .post("http://localhost:1477/processTitleMood", { titles })
+          .post(
+            "https://harmoney-headlines-news-server.onrender.com/processTitleMood",
+            { titles },
+          )
           .then((moodResponse) => {
             const moodScores = moodResponse.data;
             const articlesWithMood = articles.map((article, index) => ({

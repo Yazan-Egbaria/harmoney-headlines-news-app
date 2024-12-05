@@ -1,22 +1,28 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import { useUser } from "@clerk/clerk-react";
 
 const Article = () => {
   const [article, setArticle] = useState(null);
   const [moodScore, setMoodScore] = useState(null);
   const { id } = useParams();
+  const { user } = useUser();
+  const isAdmin = user?.publicMetadata?.role === "admin";
 
   useEffect(() => {
     axios
-      .get("http://localhost:1477/getNews")
+      .get("https://harmoney-headlines-news-server.onrender.com/getNews")
       .then((response) => {
         const specificCard = response.data[id];
         setArticle(specificCard);
         axios
-          .post("http://localhost:1477/processTitleMood", {
-            titles: [specificCard.title],
-          })
+          .post(
+            "https://harmoney-headlines-news-server.onrender.com/processTitleMood",
+            {
+              titles: [specificCard.title],
+            },
+          )
           .then((scoreResponse) => {
             setMoodScore(scoreResponse.data[0]);
           })
@@ -33,7 +39,7 @@ const Article = () => {
     if (article) {
       try {
         const calmifyResponse = await axios.post(
-          "http://localhost:1477/changeMood",
+          "https://harmoney-headlines-news-server.onrender.com/changeMood",
           {
             title: article.title,
             description: article.description,
@@ -42,7 +48,7 @@ const Article = () => {
         const updatedArticle = calmifyResponse.data;
         setArticle(updatedArticle);
         const scoreResponse = await axios.post(
-          "http://localhost:1477/processTitleMood",
+          "https://harmoney-headlines-news-server.onrender.com/processTitleMood",
           {
             titles: [updatedArticle.title],
           },
@@ -72,7 +78,7 @@ const Article = () => {
       <div className="flex">
         <div
           id="content"
-          className={`flex ${image ? "md:w-[50%]" : "md:w-full"} w-full flex-col justify-between gap-4 p-4`}
+          className={`flex ${image ? "md:w-[50%]" : "md:w-full"} w-full flex-col justify-center gap-4 p-4`}
         >
           <h2 className="text-4xl font-bold">{title}</h2>
           <p className="text-xl text-gray-400">{description}</p>
@@ -94,15 +100,17 @@ const Article = () => {
         )}
       </div>
 
-      <div className="flex flex-col items-center">
-        <p>{moodScore !== null ? `${moodScore}/10` : "Calculating..."}</p>
-        <button
-          onClick={handleCalmify}
-          className="rounded border border-black px-4 py-2 font-bold"
-        >
-          Mood
-        </button>
-      </div>
+      {isAdmin && (
+        <div className="flex flex-col items-center">
+          <p>{moodScore !== null ? `${moodScore}/10` : "Calculating..."}</p>
+          <button
+            onClick={handleCalmify}
+            className="rounded border border-black px-4 py-2 font-bold"
+          >
+            Mood
+          </button>
+        </div>
+      )}
     </div>
   );
 };
