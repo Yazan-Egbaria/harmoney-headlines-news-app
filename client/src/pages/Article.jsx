@@ -12,13 +12,13 @@ const Article = () => {
 
   useEffect(() => {
     axios
-      .get("https://harmoney-headlines-news-server.onrender.com/getNews")
+      .get("https://harmoney-headlines-news-app.onrender.com/getNews")
       .then((response) => {
         const specificCard = response.data[id];
         setArticle(specificCard);
         axios
           .post(
-            "https://harmoney-headlines-news-server.onrender.com/processTitleMood",
+            "https://harmoney-headlines-news-app.onrender.com/processTitleMood",
             {
               titles: [specificCard.title],
             },
@@ -39,7 +39,7 @@ const Article = () => {
     if (article) {
       try {
         const calmifyResponse = await axios.post(
-          "https://harmoney-headlines-news-server.onrender.com/changeMood",
+          "https://harmoney-headlines-news-app.onrender.com/changeMood",
           {
             title: article.title,
             description: article.description,
@@ -48,7 +48,7 @@ const Article = () => {
         const updatedArticle = calmifyResponse.data;
         setArticle(updatedArticle);
         const scoreResponse = await axios.post(
-          "https://harmoney-headlines-news-server.onrender.com/processTitleMood",
+          "https://harmoney-headlines-news-app.onrender.com/processTitleMood",
           {
             titles: [updatedArticle.title],
           },
